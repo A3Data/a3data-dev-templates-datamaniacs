@@ -17,7 +17,6 @@
 ## 📝 Table of Contents
 
 - [About](#about)
-- [Architeture](#architeture)
 - [Usage](#usage)
 - [Authors](#authors)
 
