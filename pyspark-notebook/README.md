@@ -27,7 +27,8 @@ This apache spark template integrated with jupyter notebook, was developed to op
 
 ### Prerequisites
 
-Docker : [Docker Download](https://www.docker.com/products/docker-desktop)
+Docker : [Docker Download](https://www.docker.com/products/docker-desktop) \
+Docker-compose: [Docker Compose Download](https://docs.docker.com/compose/install/)
 
 
 ## 🎈 Usage <a name="usage"></a>
