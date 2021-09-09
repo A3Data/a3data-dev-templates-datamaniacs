@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  pyspark:
+    image: jupyter/pyspark-notebook:latest
+    container_name: a3data-pyspark-notebook
+    init: true
+    volumes: 
+      - ./data/notebook:/home/jovyan/work
+    ports:
+      - 8888:8888
