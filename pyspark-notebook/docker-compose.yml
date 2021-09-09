@@ -6,7 +6,7 @@ services:
     container_name: a3data-pyspark-notebook
     init: true
     env_file:
-      - ./data/jupyter.env
+      - ./data/.env
     volumes: 
       - ./data/notebook:/home/jovyan/work
     ports:
