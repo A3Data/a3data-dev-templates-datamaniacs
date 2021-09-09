@@ -5,6 +5,8 @@ services:
     image: jupyter/pyspark-notebook:latest
     container_name: a3data-pyspark-notebook
     init: true
+    env_file:
+      - ./data/jupyter.env
     volumes: 
       - ./data/notebook:/home/jovyan/work
     ports:
