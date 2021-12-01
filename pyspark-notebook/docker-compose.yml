@@ -1,12 +1,16 @@
-version: "3"
-
 services:
-  pyspark:
-    image: jupyter/pyspark-notebook:latest
-    container_name: a3data-pyspark-notebook
-    env_file:
-      - ./data/.env
-    volumes: 
-      - ./data/notebook:/home/jovyan/work
+  webapp:
+    container_name: pyspark_notebook
+    build: .
+    image: pyspark_notebook
+    command: start.sh jupyter lab --LabApp.token=''
     ports:
-      - 8888:8888
+      - "8888:8888"
+    volumes:
+      - ${NOTEBOOKS_PATH}:/home/jovyan/work/notebooks/
+      - ${SRC_PATH}:/home/jovyan/work/src/
+      - ${DATA_PATH}:/home/jovyan/work/data/
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      PYARROW_IGNORE_TIMEZONE: 1
