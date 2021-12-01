@@ -48,4 +48,5 @@ docker logs a3data-pyspark-notebook
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@carlosbpy](https://github.com/carlosbpy) - Idea & Initial work
+- [@carlosbpy](https://github.com/carlosbpy)
+- [@pltoledo](https://github.com/pltoledo)
