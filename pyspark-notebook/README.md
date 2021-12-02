@@ -37,14 +37,11 @@ Docker-compose: [Docker Compose Download](https://docs.docker.com/compose/instal
 ```bash
 git clone git@github.com:A3Data/a3data-dev-templates-datamaniacs.git
 ```
-- second go into the pyspark-notebook directory and run the command
+- Then go into the pyspark-notebook directory and run the command
 ```bash
 docker-compose up -d
 ```
-- finally, access your a3data-pyspark-notebook container logs and redeem your authentication token for the notebook
-```bash
-docker logs a3data-pyspark-notebook
-```
+A Jupyter Lab application should be available at `port 8888`.
 
 ## ✍️ Authors <a name = "authors"></a>
 
