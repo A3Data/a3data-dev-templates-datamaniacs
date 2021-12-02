@@ -1,8 +1,10 @@
 services:
   webapp:
     container_name: pyspark_notebook
-    build: .
-    image: pyspark_notebook
+    build: 
+      args:
+        GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+        JSON_KEYFILE_NAME: ${JSON_KEYFILE_NAME}
     command: start.sh jupyter lab --LabApp.token=''
     ports:
       - "8888:8888"
