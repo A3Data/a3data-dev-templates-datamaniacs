@@ -56,6 +56,10 @@ Spark: 3.1.1 https://spark.apache.org/downloads.html
 Docker: 20.10.7 https://docs.docker.com/engine/install/
 
 Aws-cli: 2.2.1 https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html
+
+Minikube: https://minikube.sigs.k8s.io/docs/start/
+
+Kubectl: https://kubernetes.io/docs/tasks/tools/
 ```
 
 ## 🎈 Usage <a name="usage"></a>
@@ -84,80 +88,129 @@ Aws-cli: 2.2.1 https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install
     docker push 127012818163.dkr.ecr.us-east-1.amazonaws.com/spark-operator-<namespace>:latest
     ```
 
-## Config on Cluster [k8sa3sandbox]
+## Create Cluster 
+
+1. Create cluster using minikube
+    ```sh
+    minikube start
+    ```
+2. Checking the pods (wait for all to be "running")
+    ```sh
+    kubectl get po -A -w
+    ```
+
+## Config on Cluster 
 
 1. Create namespace
     ```sh
-    kubectl create namespace <namespace>
+    kubectl create namespace processing
     ```
 2. Create serviceaccount from namespace
     ```sh
-    kubectl create serviceaccount spark -n <namespace>
+    kubectl create serviceaccount spark -n processing
     ```
 3. Create Cluster Role Binding
     ```sh
-    kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=<namespace>:spark --namespace=<namespace>
+    kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=processing:spark --namespace=processing
     ```
 4. Create Secret with AWS Credential
     ```sh
-    kubectl create secret -n <namespace> generic aws-secret \
+    kubectl create secret -n processing generic aws-secret \
     --from-literal=keyid=<AWS_ACCESS_KEY_ID> \
     --from-literal=keysecret=<AWS_SECRET_ACCESS_KEY>
     ```
 
-5. Add Helm
+## Configuring and enabling the registry-creds addon
+
+1. Configure the registry-creds addon 
+    ```sh
+    minikube addons configure registry-creds
+    ```
+2. Provide the requested information
+    ```sh
+    Do you want to enable AWS Elastic Container Registry? [y/n]: y
+    -- Enter AWS Access Key ID: <ACCESS_KEY_ID>
+    -- Enter AWS Secret Access Key: <SECRET_ACCESS_KEY> 
+    -- (Optional) Enter AWS Session Token:
+    -- Enter AWS Region: us-east-1
+    -- Enter 12 digit AWS Account ID (Comma separated list): 127012818163
+    -- (Optional) Enter ARN of AWS role to assume:
+
+    Do you want to enable Google Container Registry? [y/n]: n
+
+    Do you want to enable Docker Registry? [y/n]: n
+
+    Do you want to enable Azure Container Registry? [y/n]: n
+    ```
+3. Enable the registry-creds addon
+    ```sh
+    minikube addons enable registry-creds
+    ```
+4. Check creation of secret awsecr-cred (wait for confirmation)
+    ```sh
+    kubectl get secret -n processing -w
+    ```
+5. Patch serviceaccount
+    ```sh
+    WINDOWS:
+
+    kubectl patch serviceaccount spark -n processing -p '{\"imagePullSecrets\": [{\"name\": \"awsecr-cred\"}]}'
+
+    LINUX:
+
+    kubectl patch serviceaccount spark -n processing -p "{\"imagePullSecrets\": [{\"name\": \"awsecr-cred\"}]}"
+    ```
+## Helm
+1. Add Helm
     ```sh
     helm repo add spark-operator https://googlecloudplatform.github.io/spark-on-k8s-operator
+
     helm repo update
-    helm install spark spark-operator/spark-operator --namespace <namespace>
-    helm ls -n <namespace>
+
+    helm install spark spark-operator/spark-operator --namespace processing --set image.tag=v1beta2-1.3.0-3.1.1
+
+    helm ls -n processing
+    ```
+
+2. Check installation
+    ```sh
+   kubectl get pods -n processing -w
     ```
     
-## Deploy Spark Application using ArgoCD
-1. Add Repository, ignoring the server's host key.
+## Apply manifest
+1. Apply manifest batch-layer
     ```sh
-    argocd repo add git@github.com:A3Data/architecture-team.git \
-    --ssh-private-key-path <path-to-private-ssh-key> \
-    --insecure-skip-server-verification
+    kubectl apply -f <BATCH-LAYER>
     ```
-2. Create Application. Note that in this example the path has been defined for the Delta Lake Application.
+2. Check application
     ```sh
-    argocd app create <app-name> \
-    --port-forward-namespace <argocd-namespace> \
-    --repo git@github.com:A3Data/architecture-team.git \
-    --revision <repo-branch> \
-    --path spark-operator-k8s-v1beta2/repository/kubernetes/pyspark/deltalake/ \
-    --dest-server https://kubernetes.default.svc \
-    --dest-namespace <namespace> \
+    kubectl get pods -n processing -w
     ```
-3. Sync Application
+3. Repeat code with other manifests
     ```sh
-    argocd app sync <app-name> --prune
-    ```
+    kubectl apply -f <DELTALAKE>
 
-
+	kubectl apply -f <STREAMING>
+    ```
+4. Check application
+    ```sh
+    kubectl get pods -n processing -w
+    ```
     
 ## Expected Result
-1. Cluster State ```kubectl get pods -n <namespace>```
+1. Cluster State
 
-![img](./docs/cluster-state.png)
+![img](./docs/cluster-estado-final.jpeg)
 
 2. Executors State
 
-![img](./docs/executors-state.png)
+![img](./docs/execucao.jpeg)
 
-3. ArgoCD UI
+3. Cluster State Finished
 
-![img](./docs/argocd-spark-batch.png)
-
-4. Logs Spark Operator Driver
-
-![img](./docs/logs-spark-operator.png)
-
-5. Cluster State Finished
-
-![img](./docs/cluster-state-finished.png)
+![img](./docs/cluster-finalizado.jpeg)
 
 ## ✍️ Authors <a name = "authors"></a>
 
 - [@carlosbpy](https://github.com/carlosbpy) - Idea & Initial work
+- [@maylatt](https://github.com/maylatt) 
