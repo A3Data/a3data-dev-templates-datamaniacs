@@ -24,7 +24,7 @@ This is a design pattern, for development using spark locally, with dependency m
 
 ### Prerequisites
 
-Apache Spark : [Docker Download](https://spark.apache.org/) \
+Apache Spark : [Apache Spark Download](https://spark.apache.org/) \
 Poetry: [Poetry Download](https://python-poetry.org/docs/) \
 Docker : [Docker Download](https://www.docker.com/products/docker-desktop) \
 Docker-compose: [Docker Compose Download](https://docs.docker.com/compose/install/)
