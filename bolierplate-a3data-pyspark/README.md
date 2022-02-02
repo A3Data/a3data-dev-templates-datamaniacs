@@ -1,7 +1,4 @@
-<p align="center">
-  <a href="" rel="noopener">
- <img height=150px src="https://miro.medium.com/max/1024/0*SXvexwZvryFczrIG.png" alt="Project logo"></a>
-</p>
+![img](https://github.com/A3Data/a3data-dev-templates-datamaniacs/blob/main/bolierplate-a3data-pyspark/docs/img/tools.png)
 
 <h3 align="center"> Boilerplate Apache Spark - A3Data</h3>
 
